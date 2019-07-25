@@ -7,14 +7,17 @@ exports.createUser = (req,res,next) => {
 		    user_profiles: 
 			   [
 			    {
-				userid: undefined,
+				userId: undefined,
 				about: null,
 				thumbnail: null,
 			     }
 			  ]
 		},{deepInsert: true,})
 	   .then(user=>res.status(201).json(user))
-	   .catch(err=>res.status(500).end());
+	   .catch(err=>{
+		console.log(err);
+		res.status(500).end();
+	});
 }
 
 exports.list = (req,res,next) => {
@@ -29,7 +32,7 @@ exports.list = (req,res,next) => {
 exports.getById = (req,res,next) => {
 	const db = req.app.get('db');
 	const {userid} = req.params;
-	db.users.findOne(userid)
+	db.users.findOne({'id':userid})
 		.then(user=>res.status(200).json(user))
 		.catch(err=>res.status(500).end())
 }
@@ -37,7 +40,8 @@ exports.getById = (req,res,next) => {
 exports.getProfile = (req,res,next) => {
 	const db = req.app.get('db');
 	let {userid} = req.params;
- 	db.user_profiles.findOne(userid)
+	let userId = userid;
+ 	db.user_profiles.findOne({userId})
 		.then(profile=>res.status(200).json(profile))
 		.catch(err=>res.status(500).end());
 }
